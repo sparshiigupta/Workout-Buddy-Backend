@@ -37,7 +37,7 @@ const createWorkout = async (req, res) => {
   if (emptyFields.length > 0) {
     return res
       .status(400)
-      .json({ error: "please fill in all the feilds", emptyFields });
+      .json({ error: "please fill in all the feilds", emptyFields, negFeilds });
   }
   if (load < 0) {
     negFeilds.push("load");
@@ -46,9 +46,11 @@ const createWorkout = async (req, res) => {
     negFeilds.push("reps");
   }
   if (negFeilds.length > 0) {
-    return res
-      .status(400)
-      .json({ error: "please fill in positive values the feilds", negFeilds });
+    return res.status(400).json({
+      error: "please fill in positive values for the feilds",
+      negFeilds,
+      emptyFields,
+    });
   }
   try {
     const workout = await Workout.create({ title, reps, load });
